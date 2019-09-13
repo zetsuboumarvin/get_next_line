@@ -6,14 +6,14 @@
 /*   By: jflorent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/11 13:29:20 by jflorent          #+#    #+#             */
-/*   Updated: 2019/09/12 18:45:19 by jflorent         ###   ########.fr       */
+/*   Updated: 2019/09/13 08:03:08 by jflorent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
 /*
- * Search node with coherent fd or create new
+** Search node with coherent fd or create new
 */
 
 static t_rfile		*search_node(t_rfile *list, int fd)
@@ -42,39 +42,15 @@ static t_rfile		*search_node(t_rfile *list, int fd)
 }
 
 /*
- * Deletes old part of node data plus \n
-*/
-
-static int			del_content(t_rfile *curr, size_t i, size_t n)
-{
-	char		*new_content;
-
-	if (n)
-	{
-		new_content = ft_strnew(n);
-		if (!new_content)
-			return (0);
-		ft_strcpy(new_content, &((curr->content)[i + 1]));
-		new_content[n] = '\0';
-		curr->content = new_content;
-		return (1);
-	}
-	else
-	{
-		free(curr->content);
-		curr->content = 0;
-		return (0);
-	}
-}
-
-/*
- * Find substring to \n and get it in the line
+** Find substring to \n and get it in the line
 */
 
 static int			get_line(t_rfile *curr, char **line)
 {
 	size_t				i;
 	char				*new;
+	char				*new_content;
+	size_t				n;
 
 	i = 0;
 	if (!(curr->content))
@@ -85,16 +61,24 @@ static int			get_line(t_rfile *curr, char **line)
 	if (!new)
 		return (-1);
 	ft_strncpy(new, curr->content, i);
-	new[i] = '\0';
 	*line = new;
-	return (del_content(curr, i, ft_strlen(curr->content) - i));
+	if ((n = ft_strlen(curr->content) - i - 1))
+	{
+		new_content = ft_strdup(&((curr->content)[i + 1]));
+		if (!new_content)
+			return (-1);
+		curr->content = new_content;
+	}
+	else
+		curr->content = 0;
+	return (1);
 }
 
 /*
- * Create new string
+** Create new string and replace it in node content
 */
 
-static char			*string_create(t_rfile *node, size_t n)
+static int			string_create(t_rfile *node, size_t n, char *buff)
 {
 	char		*new;
 
@@ -113,11 +97,13 @@ static char			*string_create(t_rfile *node, size_t n)
 		ft_strcpy(new, node->content);
 		free(node->content);
 	}
-	return (new);
+	ft_strcat(new, buff);
+	node->content = new;
+	return (1);
 }
 
 /*
- * Call searching node, filling node and cleaning node
+** Call searching node, filling node and cleaning node
 */
 
 int					get_next_line(const int fd, char **line)
@@ -125,24 +111,18 @@ int					get_next_line(const int fd, char **line)
 	static t_rfile	*node;
 	char			buff[BUFF_SIZE + 1];
 	size_t			n;
-	char			*new;
 
 	n = 0;
-	new = 0;
-	if (!line)
-		return (-1);
-	if (!(node = search_node(node, fd)))
+	if (!line || !(node = search_node(node, fd)))
 		return (-1);
 	while ((n = read(fd, buff, BUFF_SIZE)))
 	{
 		buff[n] = '\0';
-		new = string_create(node, n);
-		if (!new)
+		if (!string_create(node, n, buff))
 			return (-1);
-		ft_strcat(new, buff);
-		node->content = new;
 		if (ft_strchr(buff, '\n'))
 			break ;
 	}
-	return (get_line(node, line));
+	n = get_line(node, line);
+	return (n);
 }
