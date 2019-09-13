@@ -7,14 +7,15 @@ int			get_next_line(const int fd, char **line);
 
 int			main()
 {
-	char	*line;
+	char	*line = 0;
 	int		fda;
 	int		fdb;
-	int		fdc;
+//	int		fdc;
 	int		i;
 
 	i = 0;
-	line = (char*)malloc(sizeof(char) * 200);
+	/*
+//	line = (char*)malloc(sizeof(char) * 200);
 	fda = open("get_next_line.c", O_RDONLY);
 	fdb = open("new.txt", O_RDONLY);
 	fdc = open("new1.txt", O_RDONLY);
@@ -34,5 +35,95 @@ int			main()
 	close(fda);
 	close(fdb);
 	close(fdc);
+	*/
+	fda = open("gnl11_1.txt", O_RDONLY);
+	fdb = open("gnl11_2.txt", O_RDONLY);
+//	fdc = -3;
+//	get_next_line(fda, &line);
+	printf("%d\n", get_next_line(fda, &line));
+	printf("%s\n", line);
+
+//	get_next_line(fda, &line);
+	printf("%d\n", get_next_line(fda, &line));
+	printf("%s\n", line);
+
+//	get_next_line(fda, &line);
+	printf("%d\n", get_next_line(fda, &line));
+	printf("%s\n", line);
+
+//	get_next_line(fda, &line);
+	printf("%d\n", get_next_line(fda, &line));
+	printf("%s\n", line);
+
+	/***************/
+
+//	get_next_line(fdb, &line);
+	printf("%d\n", get_next_line(fdb, &line));
+	printf("%s\n", line);
+
+//	get_next_line(fdb, &line);
+	printf("%d\n", get_next_line(fdb, &line));
+	printf("%s\n", line);
+	
+//	get_next_line(fdb, &line);
+	printf("%d\n", get_next_line(fdb, &line));
+	printf("%s\n", line);
+	
+//	get_next_line(fdb, &line);
+	printf("%d\n", get_next_line(fdb, &line));
+	printf("%s\n", line);
+
+	/*****************/
+	
+//	get_next_line(fdc, &line);
+//	printf("%d\n", get_next_line(fdc, &line));
+//	printf("%s\n", line);
+	
+//	get_next_line(fda, &line);
+	printf("%d\n", get_next_line(fda, &line));
+	printf("%s\n", line);
+	
+//	get_next_line(fda, &line);
+	printf("%d\n", get_next_line(fda, &line));
+	printf("%s\n", line);
+	
+//	get_next_line(fda, &line);
+	printf("%d\n", get_next_line(fda, &line));
+	printf("%s\n", line);
+	
+//	get_next_line(fda, &line);
+	printf("%d\n", get_next_line(fda, &line));
+	printf("%s\n", line);
+	
+//	get_next_line(fda, &line);
+	printf("%d\n", get_next_line(fda, &line));
+	printf("%s\n", line);
+	
+//	get_next_line(fda, &line);
+	printf("%d\n", get_next_line(fda, &line));
+	printf("%s\n", line);
+
+	/******************/
+	
+//	get_next_line(fdb, &line);
+	printf("%d\n", get_next_line(fdb, &line));
+	printf("%s\n", line);
+	
+//	get_next_line(fdb, &line);
+	printf("%d\n", get_next_line(fdb, &line));
+	printf("%s\n", line);
+	free(line);
+	line = 0;
+
+	/****************/
+	
+//	get_next_line(fda, &line);
+	printf("%d\n", get_next_line(fda, &line));
+	printf("%s\n", line);
+	
+//	get_next_line(fdb, &line);
+	printf("%d\n", get_next_line(fdb, &line));
+	printf("%s\n", line);
+	
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: jflorent <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/11 13:29:20 by jflorent          #+#    #+#             */
-/*   Updated: 2019/09/13 10:52:51 by jflorent         ###   ########.fr       */
+/*   Updated: 2019/09/13 13:53:34 by jflorent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ static int			get_line(t_rfile *curr, char **line)
 {
 	size_t				i;
 	char				*new_content;
-	size_t				n;
 
 	i = 0;
 	if (!(curr->content) || !((curr->content)[i]))
@@ -64,16 +63,17 @@ static int			get_line(t_rfile *curr, char **line)
 		return (-1);
 	ft_strncpy(*line, curr->content, i);
 	(*line)[i] = '\0';
-	if ((n = ft_strlen(curr->content) - i - 1))
+	if ((curr->content)[i])
 	{
 		new_content = ft_strdup(&((curr->content)[i + 1]));
 		if (!new_content)
 			return (-1);
 		free(curr->content);
 		curr->content = new_content;
+		return (1);
 	}
-	else
-		curr->content = 0;
+	free(curr->content);
+	curr->content = 0;
 	return (1);
 }
 
@@ -150,18 +150,19 @@ int					get_next_line(const int fd, char **line)
 	t_rfile			*curr;
 
 	n = 0;
-	if (!line || !(curr = search_node(&node, fd)) || fd < 0)
+	if (!line || !(curr = search_node(&node, fd)) || fd < 0 || BUFF_SIZE < 1)
 		return (-1);
-	while ((n = read(fd, buff, BUFF_SIZE)))
-	{
-		if (n == -1)
-			return (-1);
-		buff[n] = '\0';
-		if (!string_create(curr, n, buff))
-			return (-1);
-		if (ft_strchr(buff, '\n'))
-			break ;
-	}
+	if ((curr->content && !ft_strchr(curr->content, '\n')) || !curr->content)
+		while ((n = read(fd, buff, BUFF_SIZE)))
+		{
+			if (n == -1)
+				return (-1);
+			buff[n] = '\0';
+			if (!string_create(curr, n, buff))
+				return (-1);
+			if (ft_strchr(buff, '\n') || ft_strchr(curr->content, '\n'))
+				break ;
+		}
 	n = get_line(curr, line);
 	node_clear(&node);
 	return (n);
